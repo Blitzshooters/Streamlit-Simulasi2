@@ -20,6 +20,7 @@ project/
 ├── app.py                     # Dashboard utama Streamlit
 ├── spk_module.py              # Modul SPK (AHP bobot + SAW ranking)
 ├── train_model.py             # Generate dataset sintetis + training model ML
+├── runtime.txt                # Mengunci versi Python untuk Streamlit Cloud (lihat Troubleshooting)
 ├── requirements.txt           # Daftar dependency dengan versi spesifik (Replayability)
 ├── README.md
 ├── models/
@@ -50,6 +51,24 @@ python train_model.py
 # 4. Jalankan dashboard
 streamlit run app.py
 ```
+
+## 🐛 Troubleshooting: Build Gagal di Streamlit Cloud (Pillow/zlib error)
+
+Jika log deploy menunjukkan error seperti:
+```
+Failed to download and build `pillow==10.4.0`
+RequiredDependencyException: zlib
+```
+
+**Penyebab**: Streamlit Cloud kadang menjalankan Python versi sangat baru (mis. 3.14) yang
+belum punya *wheel* (binary) precompiled untuk `pillow`/`pandas` versi lama yang dikunci di
+`requirements.txt`. Akibatnya pip mencoba build dari source dan gagal karena header sistem
+(`zlib`) tidak tersedia di environment cloud.
+
+**Solusi**: file `runtime.txt` di root project ini sudah mengunci Python ke versi **3.11**
+(versi stabil yang seluruh dependency-nya tersedia dalam bentuk wheel siap pakai). Pastikan
+file ini ikut ter-commit ke repository, lalu lakukan **Reboot app** / redeploy dari menu
+Streamlit Cloud agar environment dibangun ulang dengan Python 3.11.
 
 ## ☁️ Deploy ke Streamlit Community Cloud
 1. Push seluruh folder `project/` ke repository GitHub (publik atau private).

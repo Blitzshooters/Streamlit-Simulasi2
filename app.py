@@ -47,7 +47,7 @@ model, scaler, metrics, features, daftar_mesin, explainer = load_artifacts()
 # -------------------------------------------------------------------------
 # SIDEBAR: MODE & INPUT "WHAT-IF"
 # -------------------------------------------------------------------------
-st.sidebar.title("Panel Kontrol Simulasi")
+st.sidebar.title("⚙️ Panel Kontrol Simulasi")
 
 mode_publik = st.sidebar.toggle(
     "🔒 Mode Demo Publik (Anonimisasi)",
@@ -55,7 +55,7 @@ mode_publik = st.sidebar.toggle(
     help="Saat aktif, label mesin & angka biaya riil disamarkan agar aman ditampilkan ke audiens umum."
 )
 
-st.sidebar.markdown("### Intervensi Skenario (What-If)")
+st.sidebar.markdown("### 🎛️ Intervensi Skenario (What-If)")
 suhu = st.sidebar.slider("Suhu Mesin (°C)", 0, 1500, 70,
                           help="Coba masukkan nilai ekstrem (>200) untuk menguji Robustness Guard.")
 tekanan = st.sidebar.slider("Tekanan (bar)", 0.0, 20.0, 5.0, 0.1)
@@ -65,7 +65,7 @@ jam_operasi = st.sidebar.slider("Jam Operasi Kumulatif", 0, 12000, 4000, 100)
 
 st.sidebar.markdown("---")
 st.sidebar.caption(
-    "Bobot kriteria SPK (AHP) diselaraskan dengan kontribusi SHAP: "
+    "📌 Bobot kriteria SPK (AHP) diselaraskan dengan kontribusi SHAP: "
     f"Risiko={BOBOT_AHP['risiko_kegagalan']}, Vibrasi={BOBOT_AHP['vibrasi']}, "
     f"Biaya={BOBOT_AHP['biaya_perbaikan']}, Efisiensi={BOBOT_AHP['efisiensi']}"
 )
@@ -84,7 +84,7 @@ for fitur, (lo, hi) in BATAS_WAJAR.items():
     if not (lo <= input_sekarang[fitur] <= hi):
         peringatan_drift.append(fitur)
 
-st.title("Smart Maintenance Simulator")
+st.title("🛠️ Smart Maintenance Simulator")
 st.caption("Hybrid Decision Intelligence: Machine Learning × Explainable AI × Sistem Pendukung Keputusan")
 
 if peringatan_drift:
@@ -115,7 +115,7 @@ hasil_spk = jalankan_saw(matriks_x)
 col1, col2, col3 = st.columns([1, 1, 1.3])
 
 with col1:
-    st.subheader("Prediksi Risiko")
+    st.subheader("📊 Prediksi Risiko")
     st.metric("Skor Risiko Kegagalan", f"{prediksi_risiko:.1f} / 100")
     st.caption(f"Confidence band (±RMSE): **{batas_bawah:.1f} – {batas_atas:.1f}** "
                f"(R² model = {metrics['r2']:.2f})")
@@ -127,7 +127,7 @@ with col1:
         st.success("Status: 🟢 AMAN")
 
 with col2:
-    st.subheader("Mengapa Hasilnya Demikian? (XAI)")
+    st.subheader("🔍 Mengapa Hasilnya Demikian? (XAI)")
     fig, ax = plt.subplots(figsize=(5, 3.5))
     shap_values = explainer(input_scaled)
     shap_values.feature_names = features
@@ -136,7 +136,7 @@ with col2:
     plt.close(fig)
 
 with col3:
-    st.subheader("Rekomendasi Tindakan (SPK - SAW)")
+    st.subheader("🏆 Rekomendasi Tindakan (SPK - SAW)")
     tampil = hasil_spk.reset_index()
     if mode_publik:
         tampil["nama_mesin"] = [f"Unit-{i+1}" for i in range(len(tampil))]
@@ -150,11 +150,11 @@ with col3:
     st.info(f"✅ **Rekomendasi #1:** prioritaskan tindakan pada **{top_pick if not mode_publik else 'Unit-1'}**.")
 
 # -------------------------------------------------------------------------
-# NOVELTY: Auto-generated insight (mini agent)
+# 🤖 AI NARRATOR — NOVELTY: Auto-generated insight (mini agent)
 # Menggabungkan SHAP (kontribusi fitur) + SPK (ranking) menjadi 1 narasi.
 # -------------------------------------------------------------------------
 st.markdown("---")
-st.subheader("Ringkasan Otomatis untuk Pengambil Keputusan")
+st.subheader("🤖 AI Narrator — Ringkasan Otomatis untuk Pengambil Keputusan")
 
 kontribusi = pd.Series(shap_values[0].values, index=features).sort_values(key=abs, ascending=False)
 fitur_dominan = kontribusi.index[0]
