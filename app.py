@@ -55,7 +55,7 @@ mode_publik = st.sidebar.toggle(
     help="Saat aktif, label mesin & angka biaya riil disamarkan agar aman ditampilkan ke audiens umum."
 )
 
-st.sidebar.markdown("### 🎛️ Intervensi Skenario (What-If)")
+st.sidebar.markdown("### Intervensi Skenario (What-If)")
 suhu = st.sidebar.slider("Suhu Mesin (°C)", 0, 1500, 70,
                           help="Coba masukkan nilai ekstrem (>200) untuk menguji Robustness Guard.")
 tekanan = st.sidebar.slider("Tekanan (bar)", 0.0, 20.0, 5.0, 0.1)
